@@ -1,0 +1,1 @@
+{"version":3,"sources":["style.css"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA","file":"style.e308ff8e.css","sourceRoot":"..\\src","sourcesContent":["html,\r\nbody {\r\n  font: 16pt arial;\r\n}\r\n\r\n#viz {\r\n  width: 100vw;\r\n  height: 100vh;\r\n  /* border: 1px solid lightgray; */\r\n  font: 22pt arial;\r\n}\r\n"]}

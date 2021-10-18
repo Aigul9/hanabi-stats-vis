@@ -176,7 +176,7 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      var cypher = "MATCH (n)-[r:REL]->(m) RETURN * LIMIT ".concat(textRecords);
+      var cypher = "MATCH (n)-[r:REL]->(m)\n      RETURN *, rand() as r\n      ORDER BY r\n      LIMIT ".concat(textRecords);
       document.getElementById("message").classList.add("not-visible");
       return cypher;
     } else {
@@ -211,7 +211,6 @@ function draw() {
     container_id: "viz",
     server_url: _constants.DB_PATH,
     encrypted: "ENCRYPTION_ON",
-    // trust: "TRUST_SYSTEM_CA_SIGNED_CERTIFICATES",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {
@@ -307,7 +306,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58923" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64763" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

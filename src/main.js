@@ -87,7 +87,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    // encrypted: "ENCRYPTION_ON",
+    encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -140,7 +140,6 @@ function onClick(e) {
 }
 
 function onEnter(e) {
-  console.log("here");
   if (e.key === "Enter") {
     onClick(e);
   }

@@ -845,7 +845,8 @@ function draw() {
         caption: "weight"
       }
     },
-    initial_cypher: "MATCH (n)-[r:REL]->(m) RETURN * LIMIT 25"
+    initial_cypher: "MATCH (p {name: 'Valetta6789'})-[r]-(t) RETURN p, r, t" // "MATCH (n)-[r:REL]->(m) RETURN * LIMIT 25",
+
   };
   viz = new NeoVis.default(config);
   viz.render();
@@ -882,7 +883,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51266" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58047" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -4,8 +4,9 @@ body {
 }
 
 #viz {
-  width: 100vw;
-  height: 100vh;
-  /* border: 1px solid lightgray; */
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  position: absolute;
   font: 22pt arial;
 }

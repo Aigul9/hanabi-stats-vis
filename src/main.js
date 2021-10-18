@@ -7,7 +7,7 @@ var viz;
 function draw() {
   var config = {
     container_id: "viz",
-    server_url: `bolt://localhost:${process.env.PORT}`,
+    server_url: process.env.PATH,
     server_user: process.env.USER,
     server_password: process.env.PASSWORD,
     labels: {

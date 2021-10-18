@@ -172,15 +172,19 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      var cypher_add = "";
       var list = textList.split(",");
+      var cypher = "MATCH (p)-[r]-(t) RETURN * LIMIT ".concat(textRecords);
 
       if (list.length > 0 && list[0] !== "") {
-        list = "'" + list.join("','") + "'";
-        cypher_add = "WHERE n.name in [".concat(list, "] ");
+        var limitPerPlayer = Math.ceil(textRecords / list.length);
+        var match_q = "MATCH (p)-[r]-(t)",
+            return_q = "RETURN p, r, t LIMIT ".concat(limitPerPlayer, " UNION ALL ");
+        list = list.map(function (player) {
+          return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(return_q);
+        });
+        cypher = list.join("").slice(0, -11);
       }
 
-      var cypher = "MATCH (n)-[r:REL]->(m) ".concat(cypher_add, "RETURN * LIMIT ").concat(textRecords);
       console.log(cypher);
       notVisible(document.getElementById("message"));
       return cypher;
@@ -215,7 +219,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {
@@ -303,7 +307,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50414" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56977" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

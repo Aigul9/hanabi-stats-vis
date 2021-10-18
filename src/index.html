@@ -3,8 +3,8 @@
 
 <head>
   <title>Hanabi Graph</title>
-  <link rel="icon" href="https://github.com/Aigul9/hanabi-stats-vis/blob/master/src/favicon_yellow.svg">
-  <link rel="stylesheet" href="https://github.com/Aigul9/hanabi-stats-vis/blob/master/src/style.css">
+  <link rel="icon" href="favicon_yellow.svg">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
 </head>
 
@@ -15,9 +15,9 @@
     </summary>
     <div id="container">
       <form id="popUpForm">
-        <input id="radioPlayer" type="radio" name="choose" checked>By player<br>
+        <input id="radioPlayer" type="radio" name="option" checked>By player<br>
         <input id="textPlayer" type="text" size="40" placeholder="Enter playerName..." /><br>
-        <input id="radioRecords" type="radio" name="choose">Limit records (max 1000)<br>
+        <input id="radioRecords" type="radio" name="option">Limit records (max 1000)<br>
         <input id="textRecords" type=" text" size="40" placeholder="Enter limit..." disabled /><br>
         <!-- <input id="radioFull" type="radio" name="choose">Full graph<br> -->
         <div class="button-wrap">

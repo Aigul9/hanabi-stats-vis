@@ -87,7 +87,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -134,43 +134,25 @@ function handleChange() {
   }
 }
 
-window.onload = function () {
-  document
-    .getElementById("radioPlayer")
-    .addEventListener("change", handleChange);
-  document
-    .getElementById("radioRecords")
-    .addEventListener("change", handleChange);
+function onClick(e) {
+  e.preventDefault();
+  draw();
+}
 
-  const button = document.querySelector(".trigger");
+function onEnter(e) {
+  console.log("here");
+  if (e.key === "Enter") {
+    onClick(e);
+  }
+}
 
-  button.onclick = function (e) {
-    e.preventDefault();
-    draw();
-  };
+document.getElementById("radioPlayer").addEventListener("change", handleChange);
+document
+  .getElementById("radioRecords")
+  .addEventListener("change", handleChange);
 
-  const textPlayer = document.getElementById("textPlayer");
-  const textRecords = document.getElementById("textRecords");
-  const textList = document.getElementById("textList");
+document.querySelector(".trigger").addEventListener("click", onClick);
 
-  textPlayer.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
+const input = document.querySelectorAll("input");
 
-  textRecords.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
-
-  textList.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
-};
+input.forEach((field) => field.addEventListener("keypress", onEnter));

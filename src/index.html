@@ -8,19 +8,25 @@
 </head>
 
 <body>
-  <div>
-    <form id="popUpForm">
+  <details open>
+    <summary>
       <h2>Choose the option</h2>
-      <input id="radioPlayer" type="radio" name="choose" checked>By player<br>
-      <input id="textPlayer" type="text" size="40" placeholder="Enter playername..." /><br>
-      <input id="radioRecords" type="radio" name="choose">Limit records<br>
-      <input id="textRecords" type=" text" size="40" placeholder="Enter limit..." disabled /><br>
-      <input id="radioFull" type="radio" name="choose">Full graph<br>
-      <div class="button-wrap">
-        <button class="trigger">OK</button>
-      </div>
-    </form>
-  </div>
+    </summary>
+    <div id="container">
+      <form id="popUpForm">
+
+        <input id="radioPlayer" type="radio" name="choose" checked>By player<br>
+        <input id="textPlayer" type="text" size="40" placeholder="Enter playername..." /><br>
+        <input id="radioRecords" type="radio" name="choose">Limit records<br>
+        <input id="textRecords" type=" text" size="40" placeholder="Enter limit..." disabled /><br>
+        <input id="radioFull" type="radio" name="choose">Full graph<br>
+        <div class="button-wrap">
+          <button class="trigger">OK</button><br>
+        </div>
+        <p id="message" class="not-visible"></p>
+      </form>
+    </div>
+  </details>
   <script src=" main.js"></script>
   <div id="viz"></div>
 </body>

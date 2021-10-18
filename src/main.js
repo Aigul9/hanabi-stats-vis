@@ -1,32 +1,69 @@
 "use strict";
 
-require("dotenv").config();
+import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
 var viz;
+const empty = "Field is empty.",
+  limit = "Limit must be a number.",
+  exist = "Incorrect query.";
 
 function verify() {
+  const radioPlayer = document.getElementById("radioPlayer");
+  const radioRecords = document.getElementById("radioRecords");
+  const radioFull = document.getElementById("radioFull");
   const textPlayer = document.getElementById("textPlayer").value;
   const textRecords = document.getElementById("textRecords").value;
-  console.log(textPlayer, textRecords);
+
   if (
     (textPlayer === null || textPlayer === "") &&
-    (textRecords === null || textRecords === "")
+    (textRecords === null || textRecords === "") &&
+    radioFull.checked
   ) {
-    console.log("both fields are empty");
+    const cypher = "MATCH (n)-[r:REL]->(m) RETURN * ";
+    document.getElementById("message").classList.add("not-visible");
+    return cypher;
+  } else if (
+    radioRecords.checked &&
+    textRecords !== null &&
+    textRecords !== ""
+  ) {
+    if (isInt(+textRecords)) {
+      const cypher = `MATCH (n)-[r:REL]->(m) RETURN * LIMIT ${textRecords}`;
+      document.getElementById("message").classList.add("not-visible");
+      return cypher;
+    } else {
+      document.getElementById("message").innerHTML = limit;
+      document.getElementById("message").classList.remove("not-visible");
+      document.getElementById("message").classList.add("visible");
+      return false;
+    }
+  } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
+    const cypher = `MATCH (p {name: '${textPlayer}'})-[r]-(t) RETURN p, r, t`;
+    document.getElementById("message").classList.add("not-visible");
+    return cypher;
+  } else {
+    document.getElementById("message").innerHTML = empty;
+    document.getElementById("message").classList.remove("not-visible");
+    document.getElementById("message").classList.add("visible");
     return false;
-  } else return true;
+  }
+}
+
+function isInt(num) {
+  return Number.isInteger(num);
 }
 
 function draw() {
   console.log("draw");
-  if (!verify()) {
+  var res = verify();
+  if (!res) {
     return;
   }
   var config = {
     container_id: "viz",
-    server_url: process.env.PATH,
-    server_user: process.env.USER,
-    server_password: process.env.PASSWORD,
+    server_url: DB_PATH,
+    server_user: DB_USER,
+    server_password: DB_PASSWORD,
     labels: {
       Player: {
         caption: "name",
@@ -38,11 +75,21 @@ function draw() {
         caption: "weight",
       },
     },
-    initial_cypher: "MATCH (n)-[r:REL]->(m) RETURN * LIMIT 25",
+    initial_cypher: res,
   };
 
-  viz = new NeoVis.default(config);
-  viz.render();
+  try {
+    console.log(res);
+    viz = new NeoVis.default(config);
+    viz.render();
+    const details = document.querySelector("details");
+    details.open = false;
+  } catch (e) {
+    console.log(e);
+    document.getElementById("message").innerHTML = exist;
+    document.getElementById("message").classList.remove("not-visible");
+    document.getElementById("message").classList.add("visible");
+  }
 }
 
 function handleChange() {
@@ -80,5 +127,12 @@ window.onload = function () {
   button.onclick = function (e) {
     e.preventDefault();
     draw();
+  };
+
+  button.keyup = function (e) {
+    if (et.keyCode === 13) {
+      e.preventDefault();
+      draw();
+    }
   };
 };

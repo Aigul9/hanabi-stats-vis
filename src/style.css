@@ -1,7 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:200,600,700,400);
 
 body {
-  /* background: #e6e9e4e8; */
   color: #9e070a;
   font-weight: 400;
   font-size: 1em;
@@ -18,7 +17,7 @@ body {
 
 #popUpForm {
   background: rgba(192, 39, 39, 0.2);
-  margin: 70px auto;
+  margin: 0 auto;
   padding: 20px;
   background: lightblue;
   border-radius: 5px;
@@ -33,6 +32,10 @@ input {
 
 h2 {
   text-align: center;
+}
+
+h2:hover {
+  cursor: pointer;
 }
 
 ::-webkit-input-placeholder {
@@ -73,4 +76,27 @@ button.trigger {
 
 button:hover {
   cursor: pointer;
+}
+
+p {
+  font-size: 0.8em;
+}
+
+.visible {
+  visibility: visible;
+}
+
+.not-visible {
+  visibility: hidden;
+}
+
+#container {
+  display: flex;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
 }

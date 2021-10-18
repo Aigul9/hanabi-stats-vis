@@ -219,7 +219,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {
@@ -265,41 +265,26 @@ function handleChange() {
   }
 }
 
-window.onload = function () {
-  document.getElementById("radioPlayer").addEventListener("change", handleChange);
-  document.getElementById("radioRecords").addEventListener("change", handleChange);
-  var button = document.querySelector(".trigger");
+function onClick(e) {
+  e.preventDefault();
+  draw();
+}
 
-  button.onclick = function (e) {
-    e.preventDefault();
-    draw();
-  };
+function onEnter(e) {
+  console.log("here");
 
-  var textPlayer = document.getElementById("textPlayer");
-  var textRecords = document.getElementById("textRecords");
-  var textList = document.getElementById("textList");
+  if (e.key === "Enter") {
+    onClick(e);
+  }
+}
 
-  textPlayer.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
-
-  textRecords.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
-
-  textList.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
-    }
-  };
-};
+document.getElementById("radioPlayer").addEventListener("change", handleChange);
+document.getElementById("radioRecords").addEventListener("change", handleChange);
+document.querySelector(".trigger").addEventListener("click", onClick);
+var input = document.querySelectorAll("input");
+input.forEach(function (field) {
+  return field.addEventListener("keypress", onEnter);
+});
 },{"./constants.js":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -328,7 +313,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65337" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58567" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

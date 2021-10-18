@@ -1,12 +1,15 @@
 {
   "name": "neo4j",
   "version": "1.0.0",
+  "homepage": "http://Aigul9.github.io/hanabi-stats-vis",
   "description": "A JavaScript project",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node ./node_modules/parcel-bundler/bin/cli serve ./src/index.html --port 8080",
     "build": "node ./node_modules/parcel-bundler/bin/cli build ./src/index.html --out-dir ./dist/",
-    "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix"
+    "lint": "node ./node_modules/eslint/bin/eslint . --ext .js --fix",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -19,6 +22,7 @@
     "eslint": "^8.0.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.2",
+    "gh-pages": "^3.2.3",
     "parcel-bundler": "^1.12.5"
   },
   "dependencies": {

@@ -124,7 +124,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DB_USER = exports.DB_PATH = exports.DB_PASSWORD = void 0;
-var DB_PATH = "neo4j+s://4e956df7.databases.neo4j.io",
+var DB_PATH = "neo4j://4e956df7.databases.neo4j.io",
     DB_USER = "neo4j",
     DB_PASSWORD = "PVu30YN-VesHEoS3HYj963nMp6oZRgDYmxfnQpaCuzs";
 exports.DB_PASSWORD = DB_PASSWORD;
@@ -135,12 +135,16 @@ exports.DB_PATH = DB_PATH;
 
 var _constants = require("./constants.js");
 
+// const neo4j = require("neo4j-driver");
+// const driver = neo4j.driver(DB_PATH, neo4j.auth.basic(DB_USER, DB_PASSWORD));
+// const session = driver.session()
 var viz;
 var empty = "Field is empty.",
     limit = "Incorrect number.",
     exist = "Incorrect query.";
 
 function showError(text) {
+  console.log("error");
   document.getElementById("message").innerHTML = text;
   document.getElementById("message").classList.remove("not-visible");
   document.getElementById("message").classList.add("visible");
@@ -206,6 +210,8 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
+    encrypted: "ENCRYPTION_ON",
+    // trust: "TRUST_SYSTEM_CA_SIGNED_CERTIFICATES",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {
@@ -223,11 +229,14 @@ function draw() {
   };
 
   try {
+    console.log("try");
     viz = new NeoVis.default(config);
+    console.log(viz);
     viz.render();
     var details = document.querySelector("details");
     details.open = false;
   } catch (e) {
+    console.log(e);
     showError(exist);
   }
 }
@@ -298,7 +307,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62936" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58923" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

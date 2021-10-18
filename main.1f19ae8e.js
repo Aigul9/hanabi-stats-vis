@@ -275,7 +275,25 @@ window.onload = function () {
     draw();
   };
 
-  button.keyup = function (e) {
+  var textPlayer = document.getElementById("textPlayer");
+  var textRecords = document.getElementById("textRecords");
+  var textList = document.getElementById("textList");
+
+  textPlayer.keyup = function (e) {
+    if (et.keyCode === 13) {
+      e.preventDefault();
+      draw();
+    }
+  };
+
+  textRecords.keyup = function (e) {
+    if (et.keyCode === 13) {
+      e.preventDefault();
+      draw();
+    }
+  };
+
+  textList.keyup = function (e) {
     if (et.keyCode === 13) {
       e.preventDefault();
       draw();

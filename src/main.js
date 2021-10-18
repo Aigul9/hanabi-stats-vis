@@ -2,21 +2,23 @@
 
 import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
-// const neo4j = require("neo4j-driver");
-
-// const driver = neo4j.driver(DB_PATH, neo4j.auth.basic(DB_USER, DB_PASSWORD));
-// const session = driver.session()
-
 var viz;
 const empty = "Field is empty.",
   limit = "Incorrect number.",
   exist = "Incorrect query.";
 
+function visible(item) {
+  item.classList.remove("not-visible");
+  item.classList.add("visible");
+}
+
+function notVisible(item) {
+  item.classList.add("not-visible");
+}
+
 function showError(text) {
-  console.log("error");
   document.getElementById("message").innerHTML = text;
-  document.getElementById("message").classList.remove("not-visible");
-  document.getElementById("message").classList.add("visible");
+  visible(document.getElementById("message"));
 }
 
 function disable(item) {
@@ -31,23 +33,20 @@ function enable(item) {
 function verify() {
   const radioPlayer = document.getElementById("radioPlayer");
   const radioRecords = document.getElementById("radioRecords");
-  // const radioFull = document.getElementById("radioFull");
   const textPlayer = document.getElementById("textPlayer").value;
   const textRecords = document.getElementById("textRecords").value;
+  const textList = document.getElementById("textList").value;
 
-  // if (
-  //   (textPlayer === null || textPlayer === "") &&
-  //   (textRecords === null || textRecords === "") &&
-  //   radioFull.checked
-  // ) {
-  //   const cypher = "MATCH (n)-[r:REL]->(m) RETURN * ";
-  //   document.getElementById("message").classList.add("not-visible");
-  //   return cypher;
-  // } else
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      const cypher = `MATCH (n)-[r:REL]->(m) RETURN * LIMIT ${textRecords}`;
-      document.getElementById("message").classList.add("not-visible");
+      var cypher_add = "";
+      var list = textList.split(",");
+      if (list.length > 0) {
+        list = "'" + list.join("','") + "'";
+        cypher_add = `WHERE n.name in [${list}]`;
+      }
+      const cypher = `MATCH (n)-[r:REL]->(m) ${cypher_add} RETURN * LIMIT ${textRecords}`;
+      notVisible(document.getElementById("message"));
       return cypher;
     } else {
       showError(limit);
@@ -55,7 +54,7 @@ function verify() {
     }
   } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
     const cypher = `MATCH (p {name: '${textPlayer}'})-[r]-(t) RETURN p, r, t`;
-    document.getElementById("message").classList.add("not-visible");
+    notVisible(document.getElementById("message"));
     return cypher;
   } else {
     showError(empty);
@@ -95,9 +94,7 @@ function draw() {
   };
 
   try {
-    console.log("try");
     viz = new NeoVis.default(config);
-    console.log(viz);
     viz.render();
     const details = document.querySelector("details");
     details.open = false;
@@ -110,7 +107,6 @@ function draw() {
 function handleChange() {
   const radioPlayer = document.getElementById("radioPlayer");
   const radioRecords = document.getElementById("radioRecords");
-  // const radioFull = document.getElementById("radioFull");
   var textPlayer = document.getElementById("textPlayer");
   var textRecords = document.getElementById("textRecords");
 
@@ -121,10 +117,6 @@ function handleChange() {
     disable(textPlayer);
     enable(textRecords);
   }
-  // else if (radioFull.checked) {
-  //   disable(textPlayer);
-  //   disable(textRecords);
-  // }
 }
 
 window.onload = function () {
@@ -134,7 +126,6 @@ window.onload = function () {
   document
     .getElementById("radioRecords")
     .addEventListener("change", handleChange);
-  // document.getElementById("radioFull").addEventListener("change", handleChange);
 
   const button = document.querySelector(".trigger");
   button.onclick = function (e) {

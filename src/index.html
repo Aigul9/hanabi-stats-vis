@@ -16,10 +16,12 @@
     <div id="container">
       <form id="popUpForm">
         <input id="radioPlayer" type="radio" name="option" checked>By player<br>
-        <input id="textPlayer" type="text" size="40" placeholder="Enter playerName..." /><br>
+        <input id="textPlayer" type="text" size="40" placeholder="Enter player name..." /><br>
         <input id="radioRecords" type="radio" name="option">Limit records (max 1000)<br>
         <input id="textRecords" type=" text" size="40" placeholder="Enter limit..." disabled /><br>
         <!-- <input id="radioFull" type="radio" name="choose">Full graph<br> -->
+        <div style="margin-left: 7px">Include following players:</div>
+        <input id="textList" type="text" size="40" placeholder="Enter player names separated by comma..." /><br>
         <div class="button-wrap">
           <button class="trigger">OK</button><br>
         </div>

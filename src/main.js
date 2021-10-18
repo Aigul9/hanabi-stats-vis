@@ -39,19 +39,20 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      const match_q = "MATCH (p)-[r]-(t)",
-        return_q = `RETURN * LIMIT ${textRecords} UNION ALL `;
       var list = textList.split(",");
+      var cypher = `MATCH (p)-[r]-(t) RETURN * LIMIT ${textRecords}`;
 
       if (list.length > 0 && list[0] !== "") {
+        const limitPerPlayer = Math.ceil(textRecords / list.length);
+        const match_q = "MATCH (p)-[r]-(t)",
+          return_q = `RETURN p, r, t LIMIT ${limitPerPlayer} UNION ALL `;
+
         list = list.map(
-          (player) => `${match_q} WHERE p.name = ${player} ${return_q}`
+          (player) => `${match_q} WHERE p.name = '${player}' ${return_q}`
         );
 
-        list = list.join("").slice(0, -11);
+        cypher = list.join("").slice(0, -11);
       }
-
-      const cypher = `MATCH (p)-[r]-(t) RETURN * LIMIT ${textRecords}`;
 
       console.log(cypher);
 
@@ -86,7 +87,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {

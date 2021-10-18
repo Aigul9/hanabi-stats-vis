@@ -112,3 +112,7 @@ details > summary::-webkit-details-marker {
 .form_input:disabled {
   background-color: rgba(255, 255, 255, 0.5);
 }
+
+.warning_msg {
+  font-size: 0.85em;
+}

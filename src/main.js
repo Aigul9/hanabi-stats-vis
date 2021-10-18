@@ -39,15 +39,19 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      var cypher_add = "";
+      const match_q = "MATCH (p)-[r]-(t)",
+        return_q = `RETURN * LIMIT ${textRecords} UNION ALL `;
       var list = textList.split(",");
 
       if (list.length > 0 && list[0] !== "") {
-        list = "'" + list.join("','") + "'";
-        cypher_add = `WHERE n.name in [${list}] `;
+        list = list.map(
+          (player) => `${match_q} WHERE p.name = ${player} ${return_q}`
+        );
+
+        list = list.join("").slice(0, -11);
       }
 
-      const cypher = `MATCH (n)-[r:REL]->(m) ${cypher_add}RETURN * LIMIT ${textRecords}`;
+      const cypher = `MATCH (p)-[r]-(t) RETURN * LIMIT ${textRecords}`;
 
       console.log(cypher);
 

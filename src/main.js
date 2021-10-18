@@ -46,10 +46,7 @@ function verify() {
   // } else
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      const cypher = `MATCH (n)-[r:REL]->(m)
-      RETURN *, rand() as r
-      ORDER BY r
-      LIMIT ${textRecords}`;
+      const cypher = `MATCH (n)-[r:REL]->(m) RETURN * LIMIT ${textRecords}`;
       document.getElementById("message").classList.add("not-visible");
       return cypher;
     } else {

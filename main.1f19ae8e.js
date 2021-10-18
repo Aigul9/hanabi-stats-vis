@@ -252,13 +252,16 @@ function handleChange() {
   var radioRecords = document.getElementById("radioRecords");
   var textPlayer = document.getElementById("textPlayer");
   var textRecords = document.getElementById("textRecords");
+  var textList = document.getElementById("textList");
 
   if (radioPlayer.checked) {
     disable(textRecords);
+    disable(textList);
     enable(textPlayer);
   } else if (radioRecords.checked) {
     disable(textPlayer);
     enable(textRecords);
+    enable(textList);
   }
 }
 

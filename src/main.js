@@ -143,12 +143,31 @@ window.onload = function () {
     .addEventListener("change", handleChange);
 
   const button = document.querySelector(".trigger");
+
   button.onclick = function (e) {
     e.preventDefault();
     draw();
   };
 
-  button.keyup = function (e) {
+  const textPlayer = document.getElementById("textPlayer");
+  const textRecords = document.getElementById("textRecords");
+  const textList = document.getElementById("textList");
+
+  textPlayer.keyup = function (e) {
+    if (et.keyCode === 13) {
+      e.preventDefault();
+      draw();
+    }
+  };
+
+  textRecords.keyup = function (e) {
+    if (et.keyCode === 13) {
+      e.preventDefault();
+      draw();
+    }
+  };
+
+  textList.keyup = function (e) {
     if (et.keyCode === 13) {
       e.preventDefault();
       draw();

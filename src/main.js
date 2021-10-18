@@ -41,12 +41,18 @@ function verify() {
     if (isInt(+textRecords)) {
       var cypher_add = "";
       var list = textList.split(",");
-      if (list.length > 0) {
+
+      if (list.length > 0 && list[0] !== "") {
         list = "'" + list.join("','") + "'";
-        cypher_add = `WHERE n.name in [${list}]`;
+        cypher_add = `WHERE n.name in [${list}] `;
       }
-      const cypher = `MATCH (n)-[r:REL]->(m) ${cypher_add} RETURN * LIMIT ${textRecords}`;
+
+      const cypher = `MATCH (n)-[r:REL]->(m) ${cypher_add}RETURN * LIMIT ${textRecords}`;
+
+      console.log(cypher);
+
       notVisible(document.getElementById("message"));
+
       return cypher;
     } else {
       showError(limit);
@@ -96,6 +102,7 @@ function draw() {
   try {
     viz = new NeoVis.default(config);
     viz.render();
+
     const details = document.querySelector("details");
     details.open = false;
   } catch (e) {

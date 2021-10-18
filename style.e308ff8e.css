@@ -31,10 +31,6 @@ body {
   border: 1.5px solid rgb(29, 8, 78);
 }
 
-input {
-  margin: 6px;
-}
-
 h2,
 h3 {
   text-align: center;
@@ -46,19 +42,6 @@ h2:hover {
 
 h3 {
   margin-top: 0;
-}
-
-::-webkit-input-placeholder {
-  font-style: italic;
-}
-:-moz-placeholder {
-  font-style: italic;
-}
-::-moz-placeholder {
-  font-style: italic;
-}
-:-ms-input-placeholder {
-  font-style: italic;
 }
 
 button {
@@ -110,6 +93,24 @@ details > summary {
 }
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+.form_input {
+  font-family: "Raleway", Arial, sans-serif;
+  margin: 10px 0;
+  color: #333;
+  font-size: 0.9rem;
+  padding: 1rem;
+  border-radius: 0.2rem;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+
+.form_input:disabled {
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 

@@ -117,164 +117,74 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"constants.js":[function(require,module,exports) {
-"use strict";
+})({"../node_modules/parcel-bundler/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DB_USER = exports.DB_PATH = exports.DB_PASSWORD = void 0;
-var DB_PATH = "neo4j://4e956df7.databases.neo4j.io",
-    DB_USER = "neo4j",
-    DB_PASSWORD = "PVu30YN-VesHEoS3HYj963nMp6oZRgDYmxfnQpaCuzs";
-exports.DB_PASSWORD = DB_PASSWORD;
-exports.DB_USER = DB_USER;
-exports.DB_PATH = DB_PATH;
-},{}],"main.js":[function(require,module,exports) {
-"use strict";
-
-var _constants = require("./constants.js");
-
-var viz;
-var empty = "Field is empty.",
-    limit = "Incorrect number.",
-    exist = "Incorrect query.";
-
-function visible(item) {
-  item.classList.remove("not-visible");
-  item.classList.add("visible");
-}
-
-function notVisible(item) {
-  item.classList.add("not-visible");
-}
-
-function showError(text) {
-  document.getElementById("message").innerHTML = text;
-  visible(document.getElementById("message"));
-}
-
-function disable(item) {
-  item.disabled = true;
-  item.value = "";
-}
-
-function enable(item) {
-  item.disabled = false;
-}
-
-function verify() {
-  var radioPlayer = document.getElementById("radioPlayer");
-  var radioRecords = document.getElementById("radioRecords");
-  var textPlayer = document.getElementById("textPlayer").value;
-  var textRecords = document.getElementById("textRecords").value;
-  var textList = document.getElementById("textList").value;
-
-  if (radioRecords.checked && textRecords !== null && textRecords !== "") {
-    if (isInt(+textRecords)) {
-      var cypher_add = "";
-      var list = textList.split(",");
-
-      if (list.length > 0) {
-        list = "'" + list.join("','") + "'";
-        cypher_add = "WHERE n.name in [".concat(list, "]");
-      }
-
-      var cypher = "MATCH (n)-[r:REL]->(m) ".concat(cypher_add, " RETURN * LIMIT ").concat(textRecords);
-      notVisible(document.getElementById("message"));
-      return cypher;
-    } else {
-      showError(limit);
-      return false;
-    }
-  } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
-    var _cypher = "MATCH (p {name: '".concat(textPlayer, "'})-[r]-(t) RETURN p, r, t");
-
-    notVisible(document.getElementById("message"));
-    return _cypher;
-  } else {
-    showError(empty);
-    return false;
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
   }
+
+  return bundleURL;
 }
 
-function isInt(num) {
-  if (Number.isInteger(num) && num > 0 && num <= 1000) {
-    return true;
-  } else return false;
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
 }
 
-function draw() {
-  var res = verify();
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)?\/[^/]+(?:\?.*)?$/, '$1') + '/';
+}
 
-  if (!res) {
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel-bundler/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
     return;
   }
 
-  var config = {
-    container_id: "viz",
-    server_url: _constants.DB_PATH,
-    encrypted: "ENCRYPTION_ON",
-    server_user: _constants.DB_USER,
-    server_password: _constants.DB_PASSWORD,
-    labels: {
-      Player: {
-        caption: "name"
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
       }
-    },
-    relationships: {
-      REL: {
-        thickness: "weight",
-        caption: "weight"
-      }
-    },
-    initial_cypher: res
-  };
-
-  try {
-    viz = new NeoVis.default(config);
-    viz.render();
-    var details = document.querySelector("details");
-    details.open = false;
-  } catch (e) {
-    console.log(e);
-    showError(exist);
-  }
-}
-
-function handleChange() {
-  var radioPlayer = document.getElementById("radioPlayer");
-  var radioRecords = document.getElementById("radioRecords");
-  var textPlayer = document.getElementById("textPlayer");
-  var textRecords = document.getElementById("textRecords");
-
-  if (radioPlayer.checked) {
-    disable(textRecords);
-    enable(textPlayer);
-  } else if (radioRecords.checked) {
-    disable(textPlayer);
-    enable(textRecords);
-  }
-}
-
-window.onload = function () {
-  document.getElementById("radioPlayer").addEventListener("change", handleChange);
-  document.getElementById("radioRecords").addEventListener("change", handleChange);
-  var button = document.querySelector(".trigger");
-
-  button.onclick = function (e) {
-    e.preventDefault();
-    draw();
-  };
-
-  button.keyup = function (e) {
-    if (et.keyCode === 13) {
-      e.preventDefault();
-      draw();
     }
-  };
-};
-},{"./constants.js":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel-bundler/src/builtins/bundle-url.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -478,5 +388,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.1f19ae8e.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js"], null)
+//# sourceMappingURL=/index.js.map

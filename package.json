@@ -1,7 +1,7 @@
 {
   "name": "neo4j",
   "version": "1.0.0",
-  "homepage": "http://Aigul9.github.io/hanabi-stats-vis/",
+  "homepage": "http://Aigul9.github.io/hanabi-stats-vis/.",
   "description": "A JavaScript project",
   "main": "./dist/index.js",
   "scripts": {

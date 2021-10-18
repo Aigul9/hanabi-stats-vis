@@ -35,12 +35,17 @@ input {
   margin: 6px;
 }
 
-h2 {
+h2,
+h3 {
   text-align: center;
 }
 
 h2:hover {
   cursor: pointer;
+}
+
+h3 {
+  margin-top: 0;
 }
 
 ::-webkit-input-placeholder {
@@ -66,7 +71,7 @@ button {
 }
 
 .button-wrap {
-  padding: 15px 0 0;
+  padding: 20px 0 0;
   font-size: 1.25em;
   display: flex;
   align-items: center;
@@ -85,6 +90,7 @@ button:hover {
 
 p {
   font-size: 0.8em;
+  margin: 0;
 }
 
 .visible {

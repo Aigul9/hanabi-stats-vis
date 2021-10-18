@@ -175,12 +175,13 @@ function verify() {
       var cypher_add = "";
       var list = textList.split(",");
 
-      if (list.length > 0) {
+      if (list.length > 0 && list[0] !== "") {
         list = "'" + list.join("','") + "'";
-        cypher_add = "WHERE n.name in [".concat(list, "]");
+        cypher_add = "WHERE n.name in [".concat(list, "] ");
       }
 
-      var cypher = "MATCH (n)-[r:REL]->(m) ".concat(cypher_add, " RETURN * LIMIT ").concat(textRecords);
+      var cypher = "MATCH (n)-[r:REL]->(m) ".concat(cypher_add, "RETURN * LIMIT ").concat(textRecords);
+      console.log(cypher);
       notVisible(document.getElementById("message"));
       return cypher;
     } else {
@@ -302,7 +303,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64810" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50414" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

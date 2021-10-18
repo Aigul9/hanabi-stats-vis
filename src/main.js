@@ -4,37 +4,47 @@ import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
 var viz;
 const empty = "Field is empty.",
-  limit = "Limit must be a number.",
+  limit = "Incorrect number.",
   exist = "Incorrect query.";
+
+function showError(text) {
+  document.getElementById("message").innerHTML = text;
+  document.getElementById("message").classList.remove("not-visible");
+  document.getElementById("message").classList.add("visible");
+}
+
+function disable(item) {
+  item.disabled = true;
+  item.value = "";
+}
+
+function enable(item) {
+  item.disabled = false;
+}
 
 function verify() {
   const radioPlayer = document.getElementById("radioPlayer");
   const radioRecords = document.getElementById("radioRecords");
-  const radioFull = document.getElementById("radioFull");
+  // const radioFull = document.getElementById("radioFull");
   const textPlayer = document.getElementById("textPlayer").value;
   const textRecords = document.getElementById("textRecords").value;
 
-  if (
-    (textPlayer === null || textPlayer === "") &&
-    (textRecords === null || textRecords === "") &&
-    radioFull.checked
-  ) {
-    const cypher = "MATCH (n)-[r:REL]->(m) RETURN * ";
-    document.getElementById("message").classList.add("not-visible");
-    return cypher;
-  } else if (
-    radioRecords.checked &&
-    textRecords !== null &&
-    textRecords !== ""
-  ) {
+  // if (
+  //   (textPlayer === null || textPlayer === "") &&
+  //   (textRecords === null || textRecords === "") &&
+  //   radioFull.checked
+  // ) {
+  //   const cypher = "MATCH (n)-[r:REL]->(m) RETURN * ";
+  //   document.getElementById("message").classList.add("not-visible");
+  //   return cypher;
+  // } else
+  if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
       const cypher = `MATCH (n)-[r:REL]->(m) RETURN * LIMIT ${textRecords}`;
       document.getElementById("message").classList.add("not-visible");
       return cypher;
     } else {
-      document.getElementById("message").innerHTML = limit;
-      document.getElementById("message").classList.remove("not-visible");
-      document.getElementById("message").classList.add("visible");
+      showError(limit);
       return false;
     }
   } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
@@ -42,19 +52,18 @@ function verify() {
     document.getElementById("message").classList.add("not-visible");
     return cypher;
   } else {
-    document.getElementById("message").innerHTML = empty;
-    document.getElementById("message").classList.remove("not-visible");
-    document.getElementById("message").classList.add("visible");
+    showError(empty);
     return false;
   }
 }
 
 function isInt(num) {
-  return Number.isInteger(num);
+  if (Number.isInteger(num) && num > 0 && num <= 1000) {
+    return true;
+  } else return false;
 }
 
 function draw() {
-  console.log("draw");
   var res = verify();
   if (!res) {
     return;
@@ -79,41 +88,33 @@ function draw() {
   };
 
   try {
-    console.log(res);
     viz = new NeoVis.default(config);
-    console.log(Object.keys(viz._nodes));
     viz.render();
     const details = document.querySelector("details");
     details.open = false;
   } catch (e) {
-    console.log(e);
-    document.getElementById("message").innerHTML = exist;
-    document.getElementById("message").classList.remove("not-visible");
-    document.getElementById("message").classList.add("visible");
+    showError(exist);
   }
 }
 
 function handleChange() {
   const radioPlayer = document.getElementById("radioPlayer");
   const radioRecords = document.getElementById("radioRecords");
-  const radioFull = document.getElementById("radioFull");
+  // const radioFull = document.getElementById("radioFull");
   var textPlayer = document.getElementById("textPlayer");
   var textRecords = document.getElementById("textRecords");
 
   if (radioPlayer.checked) {
-    textPlayer.disabled = false;
-    textRecords.disabled = true;
-    textRecords.value = "";
+    disable(textRecords);
+    enable(textPlayer);
   } else if (radioRecords.checked) {
-    textRecords.disabled = false;
-    textPlayer.disabled = true;
-    textPlayer.value = "";
-  } else if (radioFull.checked) {
-    textPlayer.disabled = true;
-    textRecords.disabled = true;
-    textPlayer.value = "";
-    textRecords.value = "";
+    disable(textPlayer);
+    enable(textRecords);
   }
+  // else if (radioFull.checked) {
+  //   disable(textPlayer);
+  //   disable(textRecords);
+  // }
 }
 
 window.onload = function () {
@@ -123,7 +124,8 @@ window.onload = function () {
   document
     .getElementById("radioRecords")
     .addEventListener("change", handleChange);
-  document.getElementById("radioFull").addEventListener("change", handleChange);
+  // document.getElementById("radioFull").addEventListener("change", handleChange);
+
   const button = document.querySelector(".trigger");
   button.onclick = function (e) {
     e.preventDefault();

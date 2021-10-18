@@ -81,6 +81,7 @@ function draw() {
   try {
     console.log(res);
     viz = new NeoVis.default(config);
+    console.log(Object.keys(viz._nodes));
     viz.render();
     const details = document.querySelector("details");
     details.open = false;

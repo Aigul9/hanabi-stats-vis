@@ -2,12 +2,18 @@
 
 import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
+// const neo4j = require("neo4j-driver");
+
+// const driver = neo4j.driver(DB_PATH, neo4j.auth.basic(DB_USER, DB_PASSWORD));
+// const session = driver.session()
+
 var viz;
 const empty = "Field is empty.",
   limit = "Incorrect number.",
   exist = "Incorrect query.";
 
 function showError(text) {
+  console.log("error");
   document.getElementById("message").innerHTML = text;
   document.getElementById("message").classList.remove("not-visible");
   document.getElementById("message").classList.add("visible");
@@ -71,6 +77,8 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
+    encrypted: "ENCRYPTION_ON",
+    // trust: "TRUST_SYSTEM_CA_SIGNED_CERTIFICATES",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -88,11 +96,14 @@ function draw() {
   };
 
   try {
+    console.log("try");
     viz = new NeoVis.default(config);
+    console.log(viz);
     viz.render();
     const details = document.querySelector("details");
     details.open = false;
   } catch (e) {
+    console.log(e);
     showError(exist);
   }
 }

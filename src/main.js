@@ -46,7 +46,10 @@ function verify() {
   // } else
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      const cypher = `MATCH (n)-[r:REL]->(m) RETURN * LIMIT ${textRecords}`;
+      const cypher = `MATCH (n)-[r:REL]->(m)
+      RETURN *, rand() as r
+      ORDER BY r
+      LIMIT ${textRecords}`;
       document.getElementById("message").classList.add("not-visible");
       return cypher;
     } else {
@@ -78,7 +81,6 @@ function draw() {
     container_id: "viz",
     server_url: DB_PATH,
     encrypted: "ENCRYPTION_ON",
-    // trust: "TRUST_SYSTEM_CA_SIGNED_CERTIFICATES",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {

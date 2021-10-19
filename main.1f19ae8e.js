@@ -124,9 +124,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DB_USER = exports.DB_PATH = exports.DB_PASSWORD = void 0;
-var DB_PATH = "neo4j://4e956df7.databases.neo4j.io",
+// export const DB_PATH = "bolt://localhost:7687",
+//   DB_USER = "neo4j",
+//   DB_PASSWORD = "hanabi";
+var DB_PATH = "neo4j://abdf20aa.databases.neo4j.io",
     DB_USER = "neo4j",
-    DB_PASSWORD = "PVu30YN-VesHEoS3HYj963nMp6oZRgDYmxfnQpaCuzs";
+    DB_PASSWORD = "B4uwAXSsSNmGXJjBlUVT5ejkJN3ym2HMxeZmNaTj3Co";
 exports.DB_PASSWORD = DB_PASSWORD;
 exports.DB_USER = DB_USER;
 exports.DB_PATH = DB_PATH;
@@ -155,8 +158,7 @@ function showError(text) {
 }
 
 function disable(item) {
-  item.disabled = true;
-  item.value = "";
+  item.disabled = true; // item.value = "";
 }
 
 function enable(item) {
@@ -172,12 +174,12 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      var list = textList.split(",");
-      var cypher = "MATCH (p)-[r]-(t) RETURN * LIMIT ".concat(textRecords);
+      var list = textList.split(", ");
+      var cypher = "MATCH (p)-[r:REL]-(t) RETURN p, r, t LIMIT ".concat(textRecords);
 
       if (list.length > 0 && list[0] !== "") {
         var limitPerPlayer = Math.ceil(textRecords / list.length);
-        var match_q = "MATCH (p)-[r]-(t)",
+        var match_q = "MATCH (p)-[r:REL]-(t)",
             return_q = "RETURN p, r, t LIMIT ".concat(limitPerPlayer, " UNION ALL ");
         list = list.map(function (player) {
           return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(return_q);
@@ -185,17 +187,18 @@ function verify() {
         cypher = list.join("").slice(0, -11);
       }
 
-      console.log(cypher);
       notVisible(document.getElementById("message"));
+      console.log(cypher);
       return cypher;
     } else {
       showError(limit);
       return false;
     }
   } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
-    var _cypher = "MATCH (p {name: '".concat(textPlayer, "'})-[r]-(t) RETURN p, r, t");
+    var _cypher = "MATCH (p {name: '".concat(textPlayer, "'})-[r:REL]-(t) RETURN p, r, t");
 
     notVisible(document.getElementById("message"));
+    console.log(_cypher);
     return _cypher;
   } else {
     showError(empty);
@@ -224,11 +227,23 @@ function draw() {
     server_password: _constants.DB_PASSWORD,
     labels: {
       Player: {
-        caption: "name"
+        caption: "name",
+        size: "pagerank",
+        community: "community",
+        title_properties: ["name", "pagerank"]
       }
     },
     relationships: {
       REL: {
+        thickness: "weight",
+        caption: "weight",
+        hierarchical: true
+      },
+      EASY: {
+        thickness: "weight",
+        caption: "weight"
+      },
+      HARD: {
         thickness: "weight",
         caption: "weight"
       }
@@ -239,12 +254,14 @@ function draw() {
   try {
     viz = new NeoVis.default(config);
     viz.render();
-    var details = document.querySelector("details");
-    details.open = false;
   } catch (e) {
-    console.log(e);
+    console.log("Exception: ", e);
     showError(exist);
+    return;
   }
+
+  var details = document.querySelector("details");
+  details.open = false;
 }
 
 function handleChange() {
@@ -283,6 +300,11 @@ var input = document.querySelectorAll("input");
 input.forEach(function (field) {
   return field.addEventListener("keypress", onEnter);
 });
+var details = document.querySelector("details"); // details.addEventListener("toggle", function afterToggle() {
+//   if (details.open) {
+//     notVisible(document.getElementById("error"));
+//   }
+// });
 },{"./constants.js":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -311,7 +333,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58567" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53564" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

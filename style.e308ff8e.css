@@ -117,5 +117,19 @@ details > summary::-webkit-details-marker {
   font-size: 0.85em;
 }
 
+.error {
+  margin: 0 auto;
+}
+
+.error_image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error_msg {
+  text-align: center;
+}
+
 
 /*# sourceMappingURL=/style.e308ff8e.css.map */

@@ -5,6 +5,15 @@ CREATE CONSTRAINT playerNameConstraint ON (player:Player) ASSERT player.name IS 
 LOAD CSV WITH HEADERS FROM "file:///players_cut.csv" AS csvLine
 CREATE (p:Player { name: csvLine.name})
 
+LOAD CSV WITH HEADERS FROM "file:///pagerank1.csv" AS row
+CREATE (p:Player {name: row.name})
+SET p.pagerank  = toFloat(row.pagerank)
+
+LOAD CSV WITH HEADERS FROM "file:///pagerank1.csv" AS row
+MATCH (p:Player {name: row.name})
+SET p.community = toInteger(row.community),
+    p.pagerank  = toFloat(row.pagerank)
+
 3. Select
 MATCH (n:Player) RETURN n LIMIT 25
 MATCH (p {name: 'Valetta6789'})-[r]-(t)

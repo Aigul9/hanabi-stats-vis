@@ -40,11 +40,11 @@ function verify() {
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
       var list = textList.split(", ");
-      var cypher = `MATCH (p)-[r]-(t) RETURN * LIMIT ${textRecords}`;
+      var cypher = `MATCH (p)-[r:REL]-(t) RETURN p, r, t LIMIT ${textRecords}`;
 
       if (list.length > 0 && list[0] !== "") {
         const limitPerPlayer = Math.ceil(textRecords / list.length);
-        const match_q = "MATCH (p)-[r]-(t)",
+        const match_q = "MATCH (p)-[r:REL]-(t)",
           return_q = `RETURN p, r, t LIMIT ${limitPerPlayer} UNION ALL `;
 
         list = list.map(
@@ -62,7 +62,7 @@ function verify() {
       return false;
     }
   } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
-    const cypher = `MATCH (p {name: '${textPlayer}'})-[r]-(t) RETURN p, r, t`;
+    const cypher = `MATCH (p {name: '${textPlayer}'})-[r:REL]-(t) RETURN p, r, t`;
     notVisible(document.getElementById("message"));
     console.log(cypher);
     return cypher;
@@ -86,18 +86,22 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    // encrypted: "ENCRYPTION_ON",
+    encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
       Player: {
         caption: "name",
+        size: "pagerank",
+        community: "community",
+        title_properties: ["name", "pagerank"],
       },
     },
     relationships: {
       REL: {
         thickness: "weight",
         caption: "weight",
+        hierarchical: true,
       },
       EASY: {
         thickness: "weight",
@@ -114,17 +118,14 @@ function draw() {
   try {
     viz = new NeoVis.default(config);
     viz.render();
-
-    const details = document.querySelector("details");
-    details.open = false;
-
-    if (viz._database === undefined) {
-      visible(document.getElementById("error"));
-    }
   } catch (e) {
-    console.log(e);
-    visible(document.getElementById("error"));
+    console.log("Exception: ", e);
+    showError(exist);
+    return;
   }
+
+  const details = document.querySelector("details");
+  details.open = false;
 }
 
 function handleChange() {
@@ -169,8 +170,8 @@ input.forEach((field) => field.addEventListener("keypress", onEnter));
 
 var details = document.querySelector("details");
 
-details.addEventListener("toggle", function afterToggle(e) {
-  if (details.open) {
-    notVisible(document.getElementById("error"));
-  }
-});
+// details.addEventListener("toggle", function afterToggle() {
+//   if (details.open) {
+//     notVisible(document.getElementById("error"));
+//   }
+// });

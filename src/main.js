@@ -54,10 +54,8 @@ function verify() {
         cypher = list.join("").slice(0, -11);
       }
 
-      console.log(cypher);
-
       notVisible(document.getElementById("message"));
-
+      console.log(cypher);
       return cypher;
     } else {
       showError(limit);
@@ -66,6 +64,7 @@ function verify() {
   } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
     const cypher = `MATCH (p {name: '${textPlayer}'})-[r]-(t) RETURN p, r, t`;
     notVisible(document.getElementById("message"));
+    console.log(cypher);
     return cypher;
   } else {
     showError(empty);
@@ -87,7 +86,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -118,9 +117,13 @@ function draw() {
 
     const details = document.querySelector("details");
     details.open = false;
+
+    if (viz._database === undefined) {
+      visible(document.getElementById("error"));
+    }
   } catch (e) {
     console.log(e);
-    showError(exist);
+    visible(document.getElementById("error"));
   }
 }
 
@@ -163,3 +166,11 @@ document.querySelector(".trigger").addEventListener("click", onClick);
 const input = document.querySelectorAll("input");
 
 input.forEach((field) => field.addEventListener("keypress", onEnter));
+
+var details = document.querySelector("details");
+
+details.addEventListener("toggle", function afterToggle(e) {
+  if (details.open) {
+    notVisible(document.getElementById("error"));
+  }
+});

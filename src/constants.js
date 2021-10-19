@@ -1,3 +1,3 @@
-export const DB_PATH = "neo4j://4e956df7.databases.neo4j.io",
+export const DB_PATH = "neo4j://abdf20aa.databases.neo4j.io1",
   DB_USER = "neo4j",
-  DB_PASSWORD = "PVu30YN-VesHEoS3HYj963nMp6oZRgDYmxfnQpaCuzs";
+  DB_PASSWORD = "B4uwAXSsSNmGXJjBlUVT5ejkJN3ym2HMxeZmNaTj3Co";

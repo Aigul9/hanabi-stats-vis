@@ -116,3 +116,17 @@ details > summary::-webkit-details-marker {
 .warning_msg {
   font-size: 0.85em;
 }
+
+.error {
+  margin: 0 auto;
+}
+
+.error_image {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error_msg {
+  text-align: center;
+}

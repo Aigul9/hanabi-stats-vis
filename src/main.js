@@ -23,7 +23,7 @@ function showError(text) {
 
 function disable(item) {
   item.disabled = true;
-  item.value = "";
+  // item.value = "";
 }
 
 function enable(item) {
@@ -39,7 +39,7 @@ function verify() {
 
   if (radioRecords.checked && textRecords !== null && textRecords !== "") {
     if (isInt(+textRecords)) {
-      var list = textList.split(",");
+      var list = textList.split(", ");
       var cypher = `MATCH (p)-[r]-(t) RETURN * LIMIT ${textRecords}`;
 
       if (list.length > 0 && list[0] !== "") {
@@ -97,6 +97,14 @@ function draw() {
     },
     relationships: {
       REL: {
+        thickness: "weight",
+        caption: "weight",
+      },
+      EASY: {
+        thickness: "weight",
+        caption: "weight",
+      },
+      HARD: {
         thickness: "weight",
         caption: "weight",
       },

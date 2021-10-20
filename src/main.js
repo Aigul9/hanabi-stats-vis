@@ -86,10 +86,10 @@ function createQuery() {
       // limit clause
       const limit_q = `LIMIT ${limitPerPlayer} UNION ALL `;
 
-      list = list.map(
-        (player) =>
-          `${match_q} WHERE p.name = '${player}' and ${where_q} ${return_q} ${limit_q}`
-      );
+      if (textWeight !== "") where_q = `and ${where_q}`;
+      list = list.map((player) => {
+        `${match_q} WHERE p.name = '${player}' ${where_q} ${return_q} ${limit_q}`;
+      });
 
       query = list.join("").slice(0, -11);
     }

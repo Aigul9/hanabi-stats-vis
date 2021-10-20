@@ -3,8 +3,7 @@
 import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
 var viz;
-const empty = "Field is empty.",
-  limit = "Incorrect number.",
+const limit = "Incorrect number.",
   exist = "Incorrect query.",
   checkbox = "Select at least one option.";
 
@@ -54,6 +53,22 @@ function createQuery() {
   });
   match_q = match_q.slice(0, -2);
 
+  // where clause
+  const textWeight = document.getElementById("textWeight").value;
+  var where_q = "";
+  if (textWeight !== "") {
+    inputs.every((input, index) => {
+      console.log(input);
+      if (input) {
+        where_q = `toInteger(${inputs_rel[index].slice(
+          5,
+          6
+        )}.weight) >= ${+textWeight}`;
+        return false;
+      } else return true;
+    });
+  }
+
   // return clause
   inputs.forEach((input, index) => {
     if (input) return_q += `${inputs_rel[index].slice(5, 6)}, `;
@@ -64,7 +79,7 @@ function createQuery() {
     const textRecords = document.getElementById("textRecords").value;
     const textList = document.getElementById("textList").value;
     var list = textList.split(", ");
-    query = `${match_q} ${return_q} LIMIT ${textRecords}`;
+    query = `${match_q} where ${where_q} ${return_q} LIMIT ${textRecords}`;
 
     if (list.length > 0 && list[0] !== "") {
       const limitPerPlayer = Math.ceil(textRecords / list.length);
@@ -73,7 +88,7 @@ function createQuery() {
 
       list = list.map(
         (player) =>
-          `${match_q} WHERE p.name = '${player}' ${return_q} ${limit_q}`
+          `${match_q} WHERE p.name = '${player}' and ${where_q} ${return_q} ${limit_q}`
       );
 
       query = list.join("").slice(0, -11);
@@ -140,9 +155,13 @@ function onClick(e) {
 
   const isLimit = isLimitSelected(),
     isTypeChecked = isChecked(),
-    textRecords = document.getElementById("textRecords").value;
+    textRecords = document.getElementById("textRecords").value,
+    textWeight = document.getElementById("textWeight").value;
 
-  if (isLimit && !isInt(+textRecords)) {
+  if (
+    (isLimit && !isInt(+textRecords)) ||
+    (!isInt(+textWeight) && textWeight !== "")
+  ) {
     showError(limit);
   } else if (!isLimit) {
     document.getElementById("textRecords").value = 500;

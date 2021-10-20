@@ -220,8 +220,6 @@ function createQuery() {
     var textRecords = document.getElementById("textRecords").value;
     var textList = document.getElementById("textList").value;
     var list = textList.split(", ");
-    if (textWeight !== "") where_q = "where ".concat(where_q, " ");
-    query = "".concat(match_q, " ").concat(where_q).concat(return_q, " LIMIT ").concat(textRecords);
 
     if (list.length > 0 && list[0] !== "") {
       var limitPerPlayer = Math.ceil(textRecords / list.length); // limit clause
@@ -232,6 +230,9 @@ function createQuery() {
         return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(where_q).concat(return_q, " ").concat(limit_q);
       });
       query = list.join("").slice(0, -11);
+    } else {
+      if (textWeight !== "") where_q = "where ".concat(where_q, " ");
+      query = "".concat(match_q, " ").concat(where_q).concat(return_q, " LIMIT ").concat(textRecords);
     }
   }
 

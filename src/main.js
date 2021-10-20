@@ -58,7 +58,6 @@ function createQuery() {
   var where_q = "";
   if (textWeight !== "") {
     inputs.every((input, index) => {
-      console.log(input);
       if (input) {
         where_q = `toInteger(${inputs_rel[index].slice(
           5,
@@ -79,7 +78,9 @@ function createQuery() {
     const textRecords = document.getElementById("textRecords").value;
     const textList = document.getElementById("textList").value;
     var list = textList.split(", ");
-    query = `${match_q} where ${where_q} ${return_q} LIMIT ${textRecords}`;
+
+    if (textWeight !== "") where_q = `where ${where_q} `;
+    query = `${match_q} ${where_q}${return_q} LIMIT ${textRecords}`;
 
     if (list.length > 0 && list[0] !== "") {
       const limitPerPlayer = Math.ceil(textRecords / list.length);
@@ -87,9 +88,10 @@ function createQuery() {
       const limit_q = `LIMIT ${limitPerPlayer} UNION ALL `;
 
       if (textWeight !== "") where_q = `and ${where_q}`;
-      list = list.map((player) => {
-        `${match_q} WHERE p.name = '${player}' ${where_q} ${return_q} ${limit_q}`;
-      });
+      list = list.map(
+        (player) =>
+          `${match_q} WHERE p.name = '${player}' ${where_q}${return_q} ${limit_q}`
+      );
 
       query = list.join("").slice(0, -11);
     }

@@ -138,10 +138,23 @@ exports.DB_PATH = DB_PATH;
 
 var _constants = require("./constants.js");
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 var viz;
 var empty = "Field is empty.",
     limit = "Incorrect number.",
-    exist = "Incorrect query.";
+    exist = "Incorrect query.",
+    checkbox = "Select at least one option.";
 
 function visible(item) {
   item.classList.remove("not-visible");
@@ -158,67 +171,89 @@ function showError(text) {
 }
 
 function disable(item) {
-  item.disabled = true; // item.value = "";
+  item.disabled = true;
 }
 
 function enable(item) {
   item.disabled = false;
 }
 
-function verify() {
-  var radioPlayer = document.getElementById("radioPlayer");
-  var radioRecords = document.getElementById("radioRecords");
-  var textPlayer = document.getElementById("textPlayer").value;
-  var textRecords = document.getElementById("textRecords").value;
-  var textList = document.getElementById("textList").value;
+function getInputs() {
+  var inputs = document.querySelectorAll("input[type='checkbox']");
+  return _toConsumableArray(inputs).map(function (input) {
+    return input.checked;
+  });
+}
 
-  if (radioRecords.checked && textRecords !== null && textRecords !== "") {
-    if (isInt(+textRecords)) {
-      var list = textList.split(", ");
-      var cypher = "MATCH (p)-[r:REL]-(t) RETURN p, r, t LIMIT ".concat(textRecords);
+function isChecked() {
+  return getInputs().includes(true);
+}
 
-      if (list.length > 0 && list[0] !== "") {
-        var limitPerPlayer = Math.ceil(textRecords / list.length);
-        var match_q = "MATCH (p)-[r:REL]-(t)",
-            return_q = "RETURN p, r, t LIMIT ".concat(limitPerPlayer, " UNION ALL ");
-        list = list.map(function (player) {
-          return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(return_q);
-        });
-        cypher = list.join("").slice(0, -11);
-      }
+function isPlayerSelected() {
+  var radioPlayer = document.getElementById("radioPlayer"),
+      textPlayer = document.getElementById("textPlayer").value;
+  return radioPlayer.checked && textPlayer !== null && textPlayer !== "";
+}
 
-      notVisible(document.getElementById("message"));
-      console.log(cypher);
-      return cypher;
-    } else {
-      showError(limit);
-      return false;
+function isLimitSelected() {
+  var radioRecords = document.getElementById("radioRecords"),
+      textRecords = document.getElementById("textRecords").value;
+  return radioRecords.checked && textRecords !== null && textRecords !== "";
+}
+
+function createQuery() {
+  var inputs = getInputs();
+  var inputs_rel = {
+    0: "(p)-[r:REL]-(t), ",
+    1: "(p)-[e:EASY]-(t), ",
+    2: "(p)-[h:HARD]-(t), "
+  };
+  var match_q = "MATCH ",
+      return_q = "RETURN p, t, ",
+      query = ""; // match clause
+
+  inputs.forEach(function (input, index) {
+    if (input) match_q += inputs_rel[index];
+  });
+  match_q = match_q.slice(0, -2); // return clause
+
+  inputs.forEach(function (input, index) {
+    if (input) return_q += "".concat(inputs_rel[index].slice(5, 6), ", ");
+  });
+  return_q = return_q.slice(0, -2);
+
+  if (isPlayerSelected()) {
+    var textPlayer = document.getElementById("textPlayer").value; // where clause
+
+    query = "".concat(match_q, " WHERE p.name = '").concat(textPlayer, "' ").concat(return_q);
+  } else if (isLimitSelected()) {
+    var textRecords = document.getElementById("textRecords").value;
+    var textList = document.getElementById("textList").value;
+    var list = textList.split(", ");
+    query = "".concat(match_q, " ").concat(return_q, " LIMIT ").concat(textRecords);
+
+    if (list.length > 0 && list[0] !== "") {
+      var limitPerPlayer = Math.ceil(textRecords / list.length); // limit clause
+
+      var limit_q = "LIMIT ".concat(limitPerPlayer, " UNION ALL ");
+      list = list.map(function (player) {
+        return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(return_q, " ").concat(limit_q);
+      });
+      query = list.join("").slice(0, -11);
     }
-  } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
-    var _cypher = "MATCH (p {name: '".concat(textPlayer, "'})-[r:REL]-(t) RETURN p, r, t");
-
-    notVisible(document.getElementById("message"));
-    console.log(_cypher);
-    return _cypher;
-  } else {
-    showError(empty);
-    return false;
   }
+
+  notVisible(document.getElementById("message"));
+  console.log(query);
+  return query;
 }
 
 function isInt(num) {
-  if (Number.isInteger(num) && num > 0 && num <= 1000) {
-    return true;
-  } else return false;
+  return Number.isInteger(num) && num > 0 && num <= 1000;
 }
 
 function draw() {
-  var res = verify();
-
-  if (!res) {
-    return;
-  }
-
+  var query = createQuery();
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
@@ -230,14 +265,13 @@ function draw() {
         caption: "name",
         size: "pagerank",
         community: "community",
-        title_properties: ["name", "pagerank"]
+        title_properties: ["name", "pagerank", "community"]
       }
     },
     relationships: {
       REL: {
         thickness: "weight",
-        caption: "weight",
-        hierarchical: true
+        caption: "weight"
       },
       EASY: {
         thickness: "weight",
@@ -248,7 +282,7 @@ function draw() {
         caption: "weight"
       }
     },
-    initial_cypher: res
+    initial_cypher: query
   };
 
   try {
@@ -284,7 +318,20 @@ function handleChange() {
 
 function onClick(e) {
   e.preventDefault();
-  draw();
+  var isPlayer = isPlayerSelected(),
+      isLimit = isLimitSelected(),
+      isTypeChecked = isChecked(),
+      textRecords = document.getElementById("textRecords").value;
+
+  if (!isPlayer && !isLimit) {
+    showError(empty);
+  } else if (isLimit && !isInt(+textRecords)) {
+    showError(limit);
+  } else if (!isTypeChecked) {
+    showError(checkbox);
+  } else {
+    draw();
+  }
 }
 
 function onEnter(e) {
@@ -299,8 +346,8 @@ document.querySelector(".trigger").addEventListener("click", onClick);
 var input = document.querySelectorAll("input");
 input.forEach(function (field) {
   return field.addEventListener("keypress", onEnter);
-});
-var details = document.querySelector("details"); // details.addEventListener("toggle", function afterToggle() {
+}); // var details = document.querySelector("details");
+// details.addEventListener("toggle", function afterToggle() {
 //   if (details.open) {
 //     notVisible(document.getElementById("error"));
 //   }
@@ -333,7 +380,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53564" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52237" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

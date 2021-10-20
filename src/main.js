@@ -22,14 +22,6 @@ function showError(text) {
   visible(document.getElementById("message"));
 }
 
-function disable(item) {
-  item.disabled = true;
-}
-
-function enable(item) {
-  item.disabled = false;
-}
-
 function getInputs() {
   const inputs = document.querySelectorAll("input[type='checkbox']");
   return [...inputs].map((input) => input.checked);
@@ -39,16 +31,9 @@ function isChecked() {
   return getInputs().includes(true);
 }
 
-function isPlayerSelected() {
-  const radioPlayer = document.getElementById("radioPlayer"),
-    textPlayer = document.getElementById("textPlayer").value;
-  return radioPlayer.checked && textPlayer !== null && textPlayer !== "";
-}
-
 function isLimitSelected() {
-  const radioRecords = document.getElementById("radioRecords"),
-    textRecords = document.getElementById("textRecords").value;
-  return radioRecords.checked && textRecords !== null && textRecords !== "";
+  const textRecords = document.getElementById("textRecords").value;
+  return textRecords !== null && textRecords !== "";
 }
 
 function createQuery() {
@@ -75,11 +60,7 @@ function createQuery() {
   });
   return_q = return_q.slice(0, -2);
 
-  if (isPlayerSelected()) {
-    const textPlayer = document.getElementById("textPlayer").value;
-    // where clause
-    query = `${match_q} WHERE p.name = '${textPlayer}' ${return_q}`;
-  } else if (isLimitSelected()) {
+  if (isLimitSelected()) {
     const textRecords = document.getElementById("textRecords").value;
     const textList = document.getElementById("textList").value;
     var list = textList.split(", ");
@@ -113,7 +94,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -154,36 +135,18 @@ function draw() {
   details.open = false;
 }
 
-function handleChange() {
-  const radioPlayer = document.getElementById("radioPlayer");
-  const radioRecords = document.getElementById("radioRecords");
-  var textPlayer = document.getElementById("textPlayer");
-  var textRecords = document.getElementById("textRecords");
-  var textList = document.getElementById("textList");
-
-  if (radioPlayer.checked) {
-    disable(textRecords);
-    disable(textList);
-    enable(textPlayer);
-  } else if (radioRecords.checked) {
-    disable(textPlayer);
-    enable(textRecords);
-    enable(textList);
-  }
-}
-
 function onClick(e) {
   e.preventDefault();
 
-  const isPlayer = isPlayerSelected(),
-    isLimit = isLimitSelected(),
+  const isLimit = isLimitSelected(),
     isTypeChecked = isChecked(),
     textRecords = document.getElementById("textRecords").value;
 
-  if (!isPlayer && !isLimit) {
-    showError(empty);
-  } else if (isLimit && !isInt(+textRecords)) {
+  if (isLimit && !isInt(+textRecords)) {
     showError(limit);
+  } else if (!isLimit) {
+    document.getElementById("textRecords").value = 500;
+    draw();
   } else if (!isTypeChecked) {
     showError(checkbox);
   } else {
@@ -197,21 +160,8 @@ function onEnter(e) {
   }
 }
 
-document.getElementById("radioPlayer").addEventListener("change", handleChange);
-document
-  .getElementById("radioRecords")
-  .addEventListener("change", handleChange);
-
 document.querySelector(".trigger").addEventListener("click", onClick);
 
 const input = document.querySelectorAll("input");
 
 input.forEach((field) => field.addEventListener("keypress", onEnter));
-
-// var details = document.querySelector("details");
-
-// details.addEventListener("toggle", function afterToggle() {
-//   if (details.open) {
-//     notVisible(document.getElementById("error"));
-//   }
-// });

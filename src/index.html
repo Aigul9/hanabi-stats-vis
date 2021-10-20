@@ -16,12 +16,10 @@
     <div id="container">
       <div id="popUpForm">
         <h3>Choose the option</h3>
-        <input id="radioPlayer" type="radio" name="option" checked>Select by player *
-        <input id="textPlayer" class="form_input" type="text" placeholder="Player name" />
-        <input id="radioRecords" type="radio" name="option">Limit relationships (max 1000) *
-        <input id="textRecords" class="form_input" type=" text" placeholder="Limit" value="100" disabled />
         <div class="include">Include following players:</div>
-        <input id="textList" class="form_input" type="text" placeholder="Player1, Player2, ..." disabled />
+        <input id="textList" class="form_input" type="text" placeholder="Player1, Player2, ..." />
+        <div class="include">Limit relationships (max 1000)</div>
+        <input id="textRecords" class="form_input" type=" text" placeholder="Limit" value="100" />
         <div class="checkbox">
           <input type="checkbox" checked>Total games
           <input type="checkbox">Easy
@@ -32,7 +30,7 @@
         <div class="button-wrap">
           <button class="trigger">OK</button>
         </div>
-        <p id="message" class="not-visible"></p>
+        <p id="message" class="not-visible include"></p>
       </div>
     </div>
   </details>

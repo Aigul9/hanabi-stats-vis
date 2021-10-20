@@ -148,8 +148,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var viz;
-var empty = "Field is empty.",
-    limit = "Incorrect number.",
+var limit = "Incorrect number.",
     exist = "Incorrect query.",
     checkbox = "Select at least one option.";
 
@@ -197,7 +196,22 @@ function createQuery() {
   inputs.forEach(function (input, index) {
     if (input) match_q += inputs_rel[index];
   });
-  match_q = match_q.slice(0, -2); // return clause
+  match_q = match_q.slice(0, -2); // where clause
+
+  var textWeight = document.getElementById("textWeight").value;
+  var where_q = "";
+
+  if (textWeight !== "") {
+    inputs.every(function (input, index) {
+      console.log(input);
+
+      if (input) {
+        where_q = "toInteger(".concat(inputs_rel[index].slice(5, 6), ".weight) >= ").concat(+textWeight);
+        return false;
+      } else return true;
+    });
+  } // return clause
+
 
   inputs.forEach(function (input, index) {
     if (input) return_q += "".concat(inputs_rel[index].slice(5, 6), ", ");
@@ -208,14 +222,14 @@ function createQuery() {
     var textRecords = document.getElementById("textRecords").value;
     var textList = document.getElementById("textList").value;
     var list = textList.split(", ");
-    query = "".concat(match_q, " ").concat(return_q, " LIMIT ").concat(textRecords);
+    query = "".concat(match_q, " where ").concat(where_q, " ").concat(return_q, " LIMIT ").concat(textRecords);
 
     if (list.length > 0 && list[0] !== "") {
       var limitPerPlayer = Math.ceil(textRecords / list.length); // limit clause
 
       var limit_q = "LIMIT ".concat(limitPerPlayer, " UNION ALL ");
       list = list.map(function (player) {
-        return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(return_q, " ").concat(limit_q);
+        return "".concat(match_q, " WHERE p.name = '").concat(player, "' and ").concat(where_q, " ").concat(return_q, " ").concat(limit_q);
       });
       query = list.join("").slice(0, -11);
     }
@@ -280,9 +294,10 @@ function onClick(e) {
   e.preventDefault();
   var isLimit = isLimitSelected(),
       isTypeChecked = isChecked(),
-      textRecords = document.getElementById("textRecords").value;
+      textRecords = document.getElementById("textRecords").value,
+      textWeight = document.getElementById("textWeight").value;
 
-  if (isLimit && !isInt(+textRecords)) {
+  if (isLimit && !isInt(+textRecords) || !isInt(+textWeight) && textWeight !== "") {
     showError(limit);
   } else if (!isLimit) {
     document.getElementById("textRecords").value = 500;
@@ -333,7 +348,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52620" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62599" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -20,9 +20,15 @@
         <input id="textPlayer" class="form_input" type="text" placeholder="Player name" />
         <input id="radioRecords" type="radio" name="option">Limit relationships (max 1000) *
         <input id="textRecords" class="form_input" type=" text" placeholder="Limit" value="100" disabled />
-        <div style="margin-left: 7px">Include following players:</div>
+        <div class="include">Include following players:</div>
         <input id="textList" class="form_input" type="text" placeholder="Player1, Player2, ..." disabled />
-        <div style="margin-left: 7px" class="warning_msg">Processing will take some time.</div>
+        <div class="checkbox">
+          <input type="checkbox" checked>Total games
+          <input type="checkbox">Easy
+          <input type="checkbox">Hard
+        </div>
+
+        <div class="warning_msg">Processing will take some time.</div>
         <div class="button-wrap">
           <button class="trigger">OK</button>
         </div>
@@ -37,6 +43,7 @@
   </div> -->
   <script src="main.js"></script>
   <div id="viz"></div>
+  <!-- <button class="stabilize">Stabilize</button> -->
 </body>
 
 </html>

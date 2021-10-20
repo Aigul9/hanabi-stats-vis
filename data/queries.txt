@@ -9,8 +9,8 @@ LOAD CSV WITH HEADERS FROM "file:///pagerank1.csv" AS row
 CREATE (p:Player {name: row.name})
 SET p.pagerank  = toFloat(row.pagerank)
 
-LOAD CSV WITH HEADERS FROM "file:///pagerank1.csv" AS row
-MATCH (p:Player {name: row.name})
+LOAD CSV WITH HEADERS FROM "file:///community1.csv" AS row
+CREATE (p:Player {name: row.name})
 SET p.community = toInteger(row.community),
     p.pagerank  = toFloat(row.pagerank)
 

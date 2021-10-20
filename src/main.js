@@ -5,7 +5,8 @@ import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 var viz;
 const empty = "Field is empty.",
   limit = "Incorrect number.",
-  exist = "Incorrect query.";
+  exist = "Incorrect query.",
+  checkbox = "Select at least one option.";
 
 function visible(item) {
   item.classList.remove("not-visible");
@@ -23,70 +24,96 @@ function showError(text) {
 
 function disable(item) {
   item.disabled = true;
-  // item.value = "";
 }
 
 function enable(item) {
   item.disabled = false;
 }
 
-function verify() {
-  const radioPlayer = document.getElementById("radioPlayer");
-  const radioRecords = document.getElementById("radioRecords");
-  const textPlayer = document.getElementById("textPlayer").value;
-  const textRecords = document.getElementById("textRecords").value;
-  const textList = document.getElementById("textList").value;
+function getInputs() {
+  const inputs = document.querySelectorAll("input[type='checkbox']");
+  return [...inputs].map((input) => input.checked);
+}
 
-  if (radioRecords.checked && textRecords !== null && textRecords !== "") {
-    if (isInt(+textRecords)) {
-      var list = textList.split(", ");
-      var cypher = `MATCH (p)-[r:REL]-(t) RETURN p, r, t LIMIT ${textRecords}`;
+function isChecked() {
+  return getInputs().includes(true);
+}
 
-      if (list.length > 0 && list[0] !== "") {
-        const limitPerPlayer = Math.ceil(textRecords / list.length);
-        const match_q = "MATCH (p)-[r:REL]-(t)",
-          return_q = `RETURN p, r, t LIMIT ${limitPerPlayer} UNION ALL `;
+function isPlayerSelected() {
+  const radioPlayer = document.getElementById("radioPlayer"),
+    textPlayer = document.getElementById("textPlayer").value;
+  return radioPlayer.checked && textPlayer !== null && textPlayer !== "";
+}
 
-        list = list.map(
-          (player) => `${match_q} WHERE p.name = '${player}' ${return_q}`
-        );
+function isLimitSelected() {
+  const radioRecords = document.getElementById("radioRecords"),
+    textRecords = document.getElementById("textRecords").value;
+  return radioRecords.checked && textRecords !== null && textRecords !== "";
+}
 
-        cypher = list.join("").slice(0, -11);
-      }
+function createQuery() {
+  const inputs = getInputs();
+  const inputs_rel = {
+    0: "(p)-[r:REL]-(t), ",
+    1: "(p)-[e:EASY]-(t), ",
+    2: "(p)-[h:HARD]-(t), ",
+  };
 
-      notVisible(document.getElementById("message"));
-      console.log(cypher);
-      return cypher;
-    } else {
-      showError(limit);
-      return false;
+  var match_q = "MATCH ",
+    return_q = "RETURN p, t, ",
+    query = "";
+
+  // match clause
+  inputs.forEach((input, index) => {
+    if (input) match_q += inputs_rel[index];
+  });
+  match_q = match_q.slice(0, -2);
+
+  // return clause
+  inputs.forEach((input, index) => {
+    if (input) return_q += `${inputs_rel[index].slice(5, 6)}, `;
+  });
+  return_q = return_q.slice(0, -2);
+
+  if (isPlayerSelected()) {
+    const textPlayer = document.getElementById("textPlayer").value;
+    // where clause
+    query = `${match_q} WHERE p.name = '${textPlayer}' ${return_q}`;
+  } else if (isLimitSelected()) {
+    const textRecords = document.getElementById("textRecords").value;
+    const textList = document.getElementById("textList").value;
+    var list = textList.split(", ");
+    query = `${match_q} ${return_q} LIMIT ${textRecords}`;
+
+    if (list.length > 0 && list[0] !== "") {
+      const limitPerPlayer = Math.ceil(textRecords / list.length);
+      // limit clause
+      const limit_q = `LIMIT ${limitPerPlayer} UNION ALL `;
+
+      list = list.map(
+        (player) =>
+          `${match_q} WHERE p.name = '${player}' ${return_q} ${limit_q}`
+      );
+
+      query = list.join("").slice(0, -11);
     }
-  } else if (radioPlayer.checked && textPlayer !== null && textPlayer !== "") {
-    const cypher = `MATCH (p {name: '${textPlayer}'})-[r:REL]-(t) RETURN p, r, t`;
-    notVisible(document.getElementById("message"));
-    console.log(cypher);
-    return cypher;
-  } else {
-    showError(empty);
-    return false;
   }
+
+  notVisible(document.getElementById("message"));
+  console.log(query);
+  return query;
 }
 
 function isInt(num) {
-  if (Number.isInteger(num) && num > 0 && num <= 1000) {
-    return true;
-  } else return false;
+  return Number.isInteger(num) && num > 0 && num <= 1000;
 }
 
 function draw() {
-  var res = verify();
-  if (!res) {
-    return;
-  }
+  var query = createQuery();
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -94,14 +121,13 @@ function draw() {
         caption: "name",
         size: "pagerank",
         community: "community",
-        title_properties: ["name", "pagerank"],
+        title_properties: ["name", "pagerank", "community"],
       },
     },
     relationships: {
       REL: {
         thickness: "weight",
         caption: "weight",
-        hierarchical: true,
       },
       EASY: {
         thickness: "weight",
@@ -112,7 +138,7 @@ function draw() {
         caption: "weight",
       },
     },
-    initial_cypher: res,
+    initial_cypher: query,
   };
 
   try {
@@ -148,7 +174,21 @@ function handleChange() {
 
 function onClick(e) {
   e.preventDefault();
-  draw();
+
+  const isPlayer = isPlayerSelected(),
+    isLimit = isLimitSelected(),
+    isTypeChecked = isChecked(),
+    textRecords = document.getElementById("textRecords").value;
+
+  if (!isPlayer && !isLimit) {
+    showError(empty);
+  } else if (isLimit && !isInt(+textRecords)) {
+    showError(limit);
+  } else if (!isTypeChecked) {
+    showError(checkbox);
+  } else {
+    draw();
+  }
 }
 
 function onEnter(e) {
@@ -168,7 +208,7 @@ const input = document.querySelectorAll("input");
 
 input.forEach((field) => field.addEventListener("keypress", onEnter));
 
-var details = document.querySelector("details");
+// var details = document.querySelector("details");
 
 // details.addEventListener("toggle", function afterToggle() {
 //   if (details.open) {

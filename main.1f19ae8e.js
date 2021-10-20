@@ -124,9 +124,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DB_USER = exports.DB_PATH = exports.DB_PASSWORD = void 0;
-// export const DB_PATH = "bolt://localhost:7687",
-//   DB_USER = "neo4j",
-//   DB_PASSWORD = "hanabi";
 var DB_PATH = "neo4j://abdf20aa.databases.neo4j.io",
     DB_USER = "neo4j",
     DB_PASSWORD = "B4uwAXSsSNmGXJjBlUVT5ejkJN3ym2HMxeZmNaTj3Co";
@@ -238,7 +235,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
-    // encrypted: "ENCRYPTION_ON",
+    encrypted: "ENCRYPTION_ON",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {

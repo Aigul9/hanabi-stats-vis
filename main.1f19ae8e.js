@@ -225,7 +225,7 @@ function createQuery() {
       var limitPerPlayer = Math.ceil(textRecords / list.length); // limit clause
 
       var limit_q = "LIMIT ".concat(limitPerPlayer, " UNION ALL ");
-      if (textWeight !== "") where_q = "and ".concat(where_q);
+      if (textWeight !== "") where_q = "and ".concat(where_q, " ");
       list = list.map(function (player) {
         return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(where_q).concat(return_q, " ").concat(limit_q);
       });

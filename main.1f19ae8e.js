@@ -203,8 +203,6 @@ function createQuery() {
 
   if (textWeight !== "") {
     inputs.every(function (input, index) {
-      console.log(input);
-
       if (input) {
         where_q = "toInteger(".concat(inputs_rel[index].slice(5, 6), ".weight) >= ").concat(+textWeight);
         return false;
@@ -222,7 +220,8 @@ function createQuery() {
     var textRecords = document.getElementById("textRecords").value;
     var textList = document.getElementById("textList").value;
     var list = textList.split(", ");
-    query = "".concat(match_q, " where ").concat(where_q, " ").concat(return_q, " LIMIT ").concat(textRecords);
+    if (textWeight !== "") where_q = "where ".concat(where_q, " ");
+    query = "".concat(match_q, " ").concat(where_q).concat(return_q, " LIMIT ").concat(textRecords);
 
     if (list.length > 0 && list[0] !== "") {
       var limitPerPlayer = Math.ceil(textRecords / list.length); // limit clause
@@ -230,7 +229,7 @@ function createQuery() {
       var limit_q = "LIMIT ".concat(limitPerPlayer, " UNION ALL ");
       if (textWeight !== "") where_q = "and ".concat(where_q);
       list = list.map(function (player) {
-        "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(where_q, " ").concat(return_q, " ").concat(limit_q);
+        return "".concat(match_q, " WHERE p.name = '").concat(player, "' ").concat(where_q).concat(return_q, " ").concat(limit_q);
       });
       query = list.join("").slice(0, -11);
     }
@@ -349,7 +348,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62599" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57955" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

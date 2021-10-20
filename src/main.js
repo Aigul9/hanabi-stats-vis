@@ -79,9 +79,6 @@ function createQuery() {
     const textList = document.getElementById("textList").value;
     var list = textList.split(", ");
 
-    if (textWeight !== "") where_q = `where ${where_q} `;
-    query = `${match_q} ${where_q}${return_q} LIMIT ${textRecords}`;
-
     if (list.length > 0 && list[0] !== "") {
       const limitPerPlayer = Math.ceil(textRecords / list.length);
       // limit clause
@@ -94,6 +91,9 @@ function createQuery() {
       );
 
       query = list.join("").slice(0, -11);
+    } else {
+      if (textWeight !== "") where_q = `where ${where_q} `;
+      query = `${match_q} ${where_q}${return_q} LIMIT ${textRecords}`;
     }
   }
 

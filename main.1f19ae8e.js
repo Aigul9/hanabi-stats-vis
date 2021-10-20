@@ -170,14 +170,6 @@ function showError(text) {
   visible(document.getElementById("message"));
 }
 
-function disable(item) {
-  item.disabled = true;
-}
-
-function enable(item) {
-  item.disabled = false;
-}
-
 function getInputs() {
   var inputs = document.querySelectorAll("input[type='checkbox']");
   return _toConsumableArray(inputs).map(function (input) {
@@ -189,16 +181,9 @@ function isChecked() {
   return getInputs().includes(true);
 }
 
-function isPlayerSelected() {
-  var radioPlayer = document.getElementById("radioPlayer"),
-      textPlayer = document.getElementById("textPlayer").value;
-  return radioPlayer.checked && textPlayer !== null && textPlayer !== "";
-}
-
 function isLimitSelected() {
-  var radioRecords = document.getElementById("radioRecords"),
-      textRecords = document.getElementById("textRecords").value;
-  return radioRecords.checked && textRecords !== null && textRecords !== "";
+  var textRecords = document.getElementById("textRecords").value;
+  return textRecords !== null && textRecords !== "";
 }
 
 function createQuery() {
@@ -222,11 +207,7 @@ function createQuery() {
   });
   return_q = return_q.slice(0, -2);
 
-  if (isPlayerSelected()) {
-    var textPlayer = document.getElementById("textPlayer").value; // where clause
-
-    query = "".concat(match_q, " WHERE p.name = '").concat(textPlayer, "' ").concat(return_q);
-  } else if (isLimitSelected()) {
+  if (isLimitSelected()) {
     var textRecords = document.getElementById("textRecords").value;
     var textList = document.getElementById("textList").value;
     var list = textList.split(", ");
@@ -257,7 +238,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: _constants.DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: _constants.DB_USER,
     server_password: _constants.DB_PASSWORD,
     labels: {
@@ -298,35 +279,17 @@ function draw() {
   details.open = false;
 }
 
-function handleChange() {
-  var radioPlayer = document.getElementById("radioPlayer");
-  var radioRecords = document.getElementById("radioRecords");
-  var textPlayer = document.getElementById("textPlayer");
-  var textRecords = document.getElementById("textRecords");
-  var textList = document.getElementById("textList");
-
-  if (radioPlayer.checked) {
-    disable(textRecords);
-    disable(textList);
-    enable(textPlayer);
-  } else if (radioRecords.checked) {
-    disable(textPlayer);
-    enable(textRecords);
-    enable(textList);
-  }
-}
-
 function onClick(e) {
   e.preventDefault();
-  var isPlayer = isPlayerSelected(),
-      isLimit = isLimitSelected(),
+  var isLimit = isLimitSelected(),
       isTypeChecked = isChecked(),
       textRecords = document.getElementById("textRecords").value;
 
-  if (!isPlayer && !isLimit) {
-    showError(empty);
-  } else if (isLimit && !isInt(+textRecords)) {
+  if (isLimit && !isInt(+textRecords)) {
     showError(limit);
+  } else if (!isLimit) {
+    document.getElementById("textRecords").value = 500;
+    draw();
   } else if (!isTypeChecked) {
     showError(checkbox);
   } else {
@@ -340,18 +303,11 @@ function onEnter(e) {
   }
 }
 
-document.getElementById("radioPlayer").addEventListener("change", handleChange);
-document.getElementById("radioRecords").addEventListener("change", handleChange);
 document.querySelector(".trigger").addEventListener("click", onClick);
 var input = document.querySelectorAll("input");
 input.forEach(function (field) {
   return field.addEventListener("keypress", onEnter);
-}); // var details = document.querySelector("details");
-// details.addEventListener("toggle", function afterToggle() {
-//   if (details.open) {
-//     notVisible(document.getElementById("error"));
-//   }
-// });
+});
 },{"./constants.js":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -380,7 +336,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52237" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52620" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

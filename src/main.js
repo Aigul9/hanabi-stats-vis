@@ -3,7 +3,7 @@
 import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
 var viz;
-const limit = "Incorrect number.",
+const limit = "Incorrect limit.",
   exist = "Incorrect query.",
   checkbox = "Select at least one option.";
 

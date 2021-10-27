@@ -103,7 +103,7 @@ function createQuery() {
 }
 
 function isInt(num) {
-  return Number.isInteger(num) && num > 0 && num <= 1000;
+  return Number.isInteger(num) && num > 0;
 }
 
 function draw() {
@@ -161,7 +161,7 @@ function onClick(e) {
     textWeight = document.getElementById("textWeight").value;
 
   if (
-    (isLimit && !isInt(+textRecords)) ||
+    (isLimit && (!isInt(+textRecords) || +textRecords > 1000)) ||
     (!isInt(+textWeight) && textWeight !== "")
   ) {
     showError(limit);

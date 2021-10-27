@@ -148,7 +148,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var viz;
-var limit = "Incorrect number.",
+var limit = "Incorrect limit.",
     exist = "Incorrect query.",
     checkbox = "Select at least one option.";
 
@@ -242,7 +242,7 @@ function createQuery() {
 }
 
 function isInt(num) {
-  return Number.isInteger(num) && num > 0 && num <= 1000;
+  return Number.isInteger(num) && num > 0;
 }
 
 function draw() {
@@ -298,7 +298,7 @@ function onClick(e) {
       textRecords = document.getElementById("textRecords").value,
       textWeight = document.getElementById("textWeight").value;
 
-  if (isLimit && !isInt(+textRecords) || !isInt(+textWeight) && textWeight !== "") {
+  if (isLimit && (!isInt(+textRecords) || +textRecords > 1000) || !isInt(+textWeight) && textWeight !== "") {
     showError(limit);
   } else if (!isLimit) {
     document.getElementById("textRecords").value = 500;
@@ -349,7 +349,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57955" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59576" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -148,6 +148,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var viz;
+var t;
 var limit = "Incorrect limit.",
     exist = "Incorrect query.",
     checkbox = "Select at least one option.";
@@ -159,6 +160,16 @@ function visible(item) {
 
 function notVisible(item) {
   item.classList.add("not-visible");
+}
+
+function show(item) {
+  item.classList.remove("hide");
+  item.classList.add("show");
+}
+
+function hide(item) {
+  item.classList.remove("show");
+  item.classList.add("hide");
 }
 
 function showError(text) {
@@ -280,6 +291,7 @@ function draw() {
 
   try {
     viz = new NeoVis.default(config);
+    t = setInterval(printViz, 1000);
     viz.render();
   } catch (e) {
     console.log("Exception: ", e);
@@ -289,6 +301,9 @@ function draw() {
 
   var details = document.querySelector("details");
   details.open = false;
+  var spinner = document.getElementById("spinner");
+  spinner.innerHTML = "Loading...";
+  show(spinner);
 }
 
 function onClick(e) {
@@ -316,11 +331,40 @@ function onEnter(e) {
   }
 }
 
+function printViz() {
+  if (viz !== undefined) {
+    var spinner = document.getElementById("spinner");
+
+    if (Object.keys(viz._nodes).length !== 0) {
+      console.log("Nodes: ".concat(Object.keys(viz._nodes).length));
+      console.log("Edges: ".concat(Object.keys(viz._edges).length));
+      hide(spinner);
+    } else {
+      spinner.innerHTML = "No results";
+    }
+
+    clearInterval(t);
+  }
+}
+
+function onToggle() {
+  var spinner = document.getElementById("spinner"),
+      details = document.querySelector("details");
+
+  if (details.open == true) {
+    hide(spinner);
+  } else if (details.open == false && Object.keys(viz._nodes).length === 0) {
+    show(spinner);
+  }
+}
+
 document.querySelector(".trigger").addEventListener("click", onClick);
 var input = document.querySelectorAll("input");
 input.forEach(function (field) {
   return field.addEventListener("keypress", onEnter);
 });
+var details = document.querySelector("details");
+details.addEventListener("toggle", onToggle);
 },{"./constants.js":"constants.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -349,7 +393,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59576" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60135" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

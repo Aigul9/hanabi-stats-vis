@@ -77,11 +77,12 @@ p {
 }
 
 .visible {
-  visibility: visible;
+  display: block;
+  z-index: 1;
 }
 
 .not-visible {
-  visibility: hidden;
+  display: none;
 }
 
 #container {
@@ -119,12 +120,20 @@ details > summary::-webkit-details-marker {
   margin-top: 15px;
 }
 
-.error {
-  margin: 0 auto;
-}
-
 .include {
   margin-left: 7px;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.show {
+  opacity: 1;
+}
+
+#spinner {
+  transition: opacity 0.4s linear;
 }
 
 

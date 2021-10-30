@@ -123,7 +123,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    // encrypted: "ENCRYPTION_ON",
+    encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {

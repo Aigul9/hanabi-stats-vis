@@ -3,6 +3,8 @@
 import { DB_PATH, DB_USER, DB_PASSWORD } from "./constants.js";
 
 var viz;
+var t;
+
 const limit = "Incorrect limit.",
   exist = "Incorrect query.",
   checkbox = "Select at least one option.";
@@ -14,6 +16,16 @@ function visible(item) {
 
 function notVisible(item) {
   item.classList.add("not-visible");
+}
+
+function show(item) {
+  item.classList.remove("hide");
+  item.classList.add("show");
+}
+
+function hide(item) {
+  item.classList.remove("show");
+  item.classList.add("hide");
 }
 
 function showError(text) {
@@ -111,7 +123,7 @@ function draw() {
   var config = {
     container_id: "viz",
     server_url: DB_PATH,
-    encrypted: "ENCRYPTION_ON",
+    // encrypted: "ENCRYPTION_ON",
     server_user: DB_USER,
     server_password: DB_PASSWORD,
     labels: {
@@ -141,6 +153,7 @@ function draw() {
 
   try {
     viz = new NeoVis.default(config);
+    t = setInterval(printViz, 1000);
     viz.render();
   } catch (e) {
     console.log("Exception: ", e);
@@ -150,6 +163,10 @@ function draw() {
 
   const details = document.querySelector("details");
   details.open = false;
+
+  const spinner = document.getElementById("spinner");
+  spinner.innerHTML = "Loading...";
+  show(spinner);
 }
 
 function onClick(e) {
@@ -181,8 +198,35 @@ function onEnter(e) {
   }
 }
 
+function printViz() {
+  if (viz !== undefined) {
+    const spinner = document.getElementById("spinner");
+    if (Object.keys(viz._nodes).length !== 0) {
+      console.log(`Nodes: ${Object.keys(viz._nodes).length}`);
+      console.log(`Edges: ${Object.keys(viz._edges).length}`);
+      hide(spinner);
+    } else {
+      spinner.innerHTML = "No results";
+    }
+
+    clearInterval(t);
+  }
+}
+
+function onToggle() {
+  const spinner = document.getElementById("spinner"),
+    details = document.querySelector("details");
+  if (details.open == true) {
+    hide(spinner);
+  } else if (details.open == false && Object.keys(viz._nodes).length === 0) {
+    show(spinner);
+  }
+}
+
 document.querySelector(".trigger").addEventListener("click", onClick);
 
 const input = document.querySelectorAll("input");
-
 input.forEach((field) => field.addEventListener("keypress", onEnter));
+
+const details = document.querySelector("details");
+details.addEventListener("toggle", onToggle);

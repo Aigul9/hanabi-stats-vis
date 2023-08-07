@@ -1,6 +1,6 @@
 # Visualisation of Hanabi players graph
 
-See visualisation: https://aigul9.github.io/hanabi-stats-vis/
+See visualisation: https://aigul9.github.io/hanabi-stats-vis/ (db may be frozen due to non-usage)
 
 See related project: https://github.com/Aigul9/hanabi-stats
 
